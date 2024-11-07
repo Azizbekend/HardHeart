@@ -1,0 +1,117 @@
+:root {
+    --clr-gray-light: #efefef;
+    --clr-gray: #8f8f8f;
+    --clr-black: #292d32;
+
+    --clr-purple: #6e61ba;
+    --clr-purple-light: #b3a8f2;
+    --clr-purplePink: #8e52ba;
+
+    --clr-red: #ff001a;
+    --clr-blue: #0077ff;
+    --clr-green: #04c400;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+@media (max-width: 1480px) {
+    .container {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+}
+
+._btn {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 18px;
+    color: white;
+
+    &._purple {
+        background-color: var(--clr-purple);
+        &:hover {
+            background-color: var(--clr-purple-light);
+        }
+    }
+    &._green {
+        background-color: var(--clr-green);
+        &:hover {
+            background-color: #03c4008b;
+        }
+    }
+    &._red {
+        background-color: var(--clr-red);
+        &:hover {
+            background-color: #ff001982;
+        }
+    }
+    &._nFonRed {
+        border: 1px solid var(--clr-red);
+        color: var(--clr-red);
+        
+        &:hover {
+            background-color: var(--clr-red);
+            color: white;
+        }
+    }
+    &._blue {
+        background-color: var(--clr-blue);
+        &:hover {
+            background-color: #0077ff70;
+        }
+    }
+
+    &._nFon {
+        border: 1px solid var(--clr-purple);
+        color: var(--clr-purple);
+
+        &:hover {
+            color: white;
+            background-color: var(--clr-purple);
+        }
+    }
+}
+
+._borderBtn {
+    border-radius: 50px;
+}
+
+.banner__card {
+    @include razmer("width", 300, 150);
+    max-width: 280px;
+}
+
+.logo {
+    font-family: "TitanOne";
+    font-weight: 400;
+    font-size: 32px;
+}
+
+@media (max-width: em($mPoint-5, 16)) {
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    ._btn {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: em($mPoint-6, 16)) {
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .logo {
+        font-size: 20px;
+    }
+}

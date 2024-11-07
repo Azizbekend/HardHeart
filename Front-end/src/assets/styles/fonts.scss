@@ -1,0 +1,42 @@
+@font-face {
+    font-family: "Nunito";
+    font-weight: 700;
+    src: url("../fonts/Nunito/Nunito-Bold.ttf");
+}
+@font-face {
+    font-family: "Nunito";
+    font-weight: 500;
+    src: url("../fonts/Nunito/Nunito-Medium.ttf");
+}
+@font-face {
+    font-family: "Nunito";
+    font-weight: 400;
+    src: url("../fonts/Nunito/Nunito-Regular.ttf");
+}
+@font-face {
+    font-family: "OpenSans";
+    font-weight: 700;
+    src: url("../fonts/Open_Sans/OpenSans-Bold.ttf");
+}
+@font-face {
+    font-family: "OpenSans";
+    font-weight: 600;
+    src: url("../fonts/Open_Sans/OpenSans-SemiBold.ttf");
+}
+@font-face {
+    font-family: "OpenSans";
+    font-weight: 500;
+    src: url("../fonts/Open_Sans/OpenSans-Medium.ttf");
+}
+@font-face {
+    font-family: "OpenSans";
+    font-weight: 400;
+    src: url("../fonts/Open_Sans/OpenSans-Regular.ttf");
+}
+@font-face {
+    font-family: "TitanOne";
+    font-weight: 400;
+    src: url("../fonts/Titan_One/TitanOne-Regular.ttf");
+}
+
+$commonFont: "Nunito";

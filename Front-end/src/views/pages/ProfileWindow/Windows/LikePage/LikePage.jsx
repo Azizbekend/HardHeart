@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { SVGIcon, useAuth, Modal, ProfileWindowModal } from '../../../../Imports/components'
-
-import { bannerCenterFoto } from "../../../../Imports/media"
+import { SVGIcon, useAuth, Modal, ProfileWindowModal, getFetch, postFetch, } from '../../../../Imports/components'
+import UserCard from "./UserCard";
 
 
 export default function LikePage() {
@@ -17,8 +16,35 @@ export default function LikePage() {
             setCardTypeBtn("likeMe");
         }
     }, [user]);
-    // Переменные для inputs
+
+
+
+    const [userList, setUserList] = useState([]);
+    useEffect(() => {
+        if (user.role == "user") {
+            getUserList("userListLikeMe")
+        } else {
+            getUserList("userListAll")
+        }
+    }, [])
+
+
     const [likeSearch, setLikeSearch] = useState('');
+    const [filteredItems, setFilteredItems] = useState();
+    useEffect(() => {
+        setFilteredItems(userList)
+    }, [userList])
+    const handleSearch = (e) => {
+        const value = e.target.value.toLowerCase();
+        setLikeSearch(value);
+        const result = userList.filter((item) => {
+            const idMatch = item.id.toString().includes(value);
+            const nameMatch = item.name.toLowerCase().includes(value);
+            return idMatch || nameMatch;
+        });
+        setFilteredItems(result);
+    };
+
 
     function likeHeader(userRole) {
         switch (userRole) {
@@ -27,65 +53,63 @@ export default function LikePage() {
                     <div className="like__header">
                         <p className="like__name">Лайки</p>
                         <p className="like__name">
-                            <button className={cardTypeBtn === "likeMe" ? "_active" : ""} onClick={() => setCardTypeBtn("likeMe")}>меня</button> / <button className={cardTypeBtn === "" ? "_active" : ""} onClick={() => setCardTypeBtn("")}>взаимные</button>
+                            <button className={cardTypeBtn === "likeMe" ? "_active" : ""} onClick={() => { setCardTypeBtn("likeMe"); getUserList("userListLikeMe") }}>меня</button>
+                            /
+                            <button className={cardTypeBtn === "" ? "_active" : ""} onClick={() => { setCardTypeBtn(""); getUserList("userListLikeEachOther") }}>взаимные</button>
                         </p>
                     </div>
                 </>)
             case "admin":
                 return (<>
-                    <button className='profileWindow__filter _like' onClick={() => setModalOpen(true)}><SVGIcon name="filter" /></button>
+                    {/* <button className='profileWindow__filter _like' onClick={() => setModalOpen(true)}><SVGIcon name="filter" /></button> */}
 
                     <div className="like__header">
-                        <p className="like__name">Лайки</p>
+                        <p className="like__name">Список пользователей</p>
                     </div>
                     <div className="like__search">
-                        <input type="text" name="likeSearch" value={likeSearch} onChange={(e) => setLikeSearch(e.target.value)} placeholder="Найти по имени" />
+                        <input type="text" name="likeSearch" value={likeSearch} onChange={handleSearch} placeholder="Найти по имени" />
                         <button className="_btn _green ">Найти</button>
                     </div>
                 </>)
         }
     }
 
-    function likeCard(btnType, block = false) {
-        return (<>
-            <div className={`like__card ${block && "_red"}`}>
-                <div className="like__card-img">
-                    <img src={bannerCenterFoto} alt="bannerCenterFoto" />
-                    {likeCardTypeBtn(btnType, block)}
-                </div>
-                <p className="like__card-name">Имя фамилия, 19</p>
-                <p className="like__card-city">из Казани</p>
-            </div>
-        </>)
-    }
+    const [loading, setLoading] = useState(true);
+    // Получение пользователей
+    function getUserList(type) {
+        setLoading(true);
+        if (type === "userListAll") {
+            getFetch("userListAll", "", setLoading).then((data) => {
+                setUserList(data);
+            });
+        }
+        if (type === "userListLikeMe") {
+            postFetch("userListLikeMe", { idUser: user.id }, setLoading).then((data) => {
+                setUserList(data);
+            });
+        }
 
-    function likeCardTypeBtn(type, block) {
-        switch (type) {
-            case "likeMe":
-                return (<>
-                    <div className="like__btns">
-                        <button className="like__btn-svg _btn _red">
-                            <SVGIcon name="closeWhite" />
-                        </button>
-                        <button className="like__btn-svg _btn _blue">
-                            <SVGIcon name="heart" />
-                        </button>
-                    </div>
-                </>)
-            case "usersList":
-                return (<>
-                    <div className="like__btns">
-                        {!block ? (<button className="like__btn _btn _red _borderBtn">Блокировать</button>) : (<button className="like__btn _btn _blue _borderBtn">Разблокировать</button>)}
-                    </div>
-                </>)
-            default:
-                return null;
+        if (type === "userListLikeEachOther") {
+            postFetch("userListLikeEachOther", { idUser: user.id }, setLoading).then((data) => {
+                setUserList(data);
+            });
         }
     }
 
+
+
+    // Блокировка пользователя
+    const [blockedUsers, setBlockedUsers] = useState({});
+
+    const toggleBlockUser = (userId) => {
+        setBlockedUsers((prev) => ({
+            ...prev,
+            [userId]: !prev[userId],
+        }));
+    };
+
     return (
         <>
-
             <Modal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
@@ -97,24 +121,20 @@ export default function LikePage() {
                 {likeHeader(user.role)}
                 <div className="like__container">
                     <div className="like__cards">
-                        {likeCard(cardTypeBtn, false)}
-                        {likeCard(cardTypeBtn, false)}
-                        {likeCard(cardTypeBtn, false)}
-                        {likeCard(cardTypeBtn, true)}
-                        {likeCard(cardTypeBtn, true)}
-                        {likeCard(cardTypeBtn, true)}
-                        {likeCard(cardTypeBtn, true)}
-                        {likeCard(cardTypeBtn, true)}
-                        {likeCard(cardTypeBtn, true)}
-                        {likeCard(cardTypeBtn, false)}
-                        {likeCard(cardTypeBtn, false)}
-                        {likeCard(cardTypeBtn, false)}
-                        {likeCard(cardTypeBtn, false)}
-                        {likeCard(cardTypeBtn, false)}
-                        {likeCard(cardTypeBtn, false)}
-                        {likeCard(cardTypeBtn, true)}
-                        {likeCard(cardTypeBtn, true)}
-                        {likeCard(cardTypeBtn, true)}
+                        {loading ? <p>Загрузка...</p> :
+                            userList && userList.length > 0 ?
+                                filteredItems ?
+                                    (filteredItems.map((userLike, index) => (
+                                        <UserCard userInfo={userLike} typeBtn={cardTypeBtn} setUserList={setUserList} user={user} key={index} />
+                                    ))
+                                    )
+                                    :
+                                    (userList.map((userLike, index) => (
+                                        <UserCard userInfo={userLike} typeBtn={cardTypeBtn} setUserList={setUserList} user={user} key={index} />
+                                    ))
+                                    ) : (
+                                    <p>НЕТУ</p>
+                                )}
                     </div>
                 </div>
             </div>

@@ -1,8 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { SVGIcon, useAuth, LoginModal, Modal } from '../Imports/components';
+import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
+    const navigate = useNavigate()
+    const { signout } = useAuth()
     const [isWideForChat, setIsWideForChat] = useState(window.innerWidth <= 1170);
     const handleResize = () => {
         setIsWideForChat(window.innerWidth <= 1170);
@@ -29,11 +32,10 @@ export default function Header() {
 
     const chatLink = isWideForChat
         ? { to: "/profileWindow/adminChats/chatpanel", icon: "chatsAdmin", label: "Чаты" }
-        : {
-            to: "/profileWindow/adminChats/chat/:idChat",
-            icon: "chatsAdmin",
-            label: "Чаты",
-        };
+        : { to: "/profileWindow/userChats/like", icon: "chatsAdmin", label: "Чаты" };
+
+    const userChatLink = isWideForChat && { to: "/profileWindow/userChats/chatpanel", icon: "chatsAdmin", label: "Чаты" };
+
 
 
     const typeNav = (user) => {
@@ -55,11 +57,26 @@ export default function Header() {
                         <SVGIcon name="user" />
                     </Link>
                 ) : (
-                    <Link to="/" className="nav__userIcon">
+                    <button className="nav__userIcon" onClick={() => signout(() => navigate("/"), { replace: true })}>
                         <SVGIcon name="exitAdmin" />
-                    </Link>
+                    </button>
                 )}
-            </nav>
+            </nav >
+        );
+
+        const renderNavOne = ({ to, icon, label }) => (
+            <>
+                <Link
+                    to={to}
+                    className={`nav__link ${localUrl.pathname === to ? "_active" : ""}`}
+                >
+                    <SVGIcon name={icon} />
+                    {label}
+                </Link>
+                <button className="nav__userIcon" onClick={() => signout(() => navigate("/"), { replace: true })}>
+                    <SVGIcon name="exitAdmin" />
+                </button>
+            </>
         );
 
         const renderBurgerButton = () => (
@@ -87,7 +104,7 @@ export default function Header() {
                         {renderNav([
                             { to: "/profileWindow/userChats/", icon: "searchHeart", label: "Поиск" },
                             { to: "/profileWindow/userChats/like", icon: "heart", label: "Лайки" },
-                            { to: "/profileWindow/userChats/chat/:idChat", icon: "chatsUser", label: "Чаты" }
+                            userChatLink
                         ])}
                         {renderBurgerButton()}
                     </>
@@ -116,7 +133,11 @@ export default function Header() {
                 );
 
             default:
-                return <div>No navigation available</div>; // Consider adding default behavior
+                return (
+                    <nav className={isActive ? 'nav _active' : 'nav'}>
+                        {renderNavOne(userChatLink)}
+                    </nav >
+                )
         }
     };
 
@@ -138,8 +159,9 @@ export default function Header() {
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
             >
-                <LoginModal />
+                <LoginModal onClose={() => setModalOpen(false)} />
             </Modal>
+
             {headerBlock(user.role)}
         </>
     );

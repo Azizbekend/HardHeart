@@ -68,4 +68,30 @@ class AuthRegController extends Controller
 
         return $user;
     }
+
+    public function cards(Request $request)
+    {
+
+        $cards = [
+            "id" => 0,
+            "adress" => "string",
+            "companyName" => "string",
+            "latitude" => 0,
+            "longitude" => 0,
+            "dailyLimit" => 0,
+            "isArchived" => true,
+            "name" => "string",
+            "firstName" => "string",
+            "lastName" => "string",
+            "patronymic" => "string",
+            "post" => "string",
+            "phone" => "string",
+            "email" => "string",
+            "municipalities" => [
+                "id" => 0,
+                "name" => "string"
+            ]
+        ];
+        return response()->json($cards);
+    }
 }

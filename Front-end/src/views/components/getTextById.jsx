@@ -1,4 +1,4 @@
-import { nameTexts, smokingTexts, bodyTypeTexts, zodiacTexts, finansTexts } from '../Imports/data'
+import { nameTexts, smokingTexts, bodyTypeTexts, zodiacTexts, finansTexts, discriptionClaims } from '../Imports/data'
 
 
 export default function getTextById(name, id) {
@@ -11,6 +11,14 @@ export default function getTextById(name, id) {
             case "3":
                 return "дружеское общение"
             case "4":
+                return "новый опыт"
+            case 1:
+                return "серьёзные отношения"
+            case 2:
+                return "свободные отношения"
+            case 3:
+                return "дружеское общение"
+            case 4:
                 return "новый опыт"
             default:
                 return "думаю..."
@@ -31,5 +39,8 @@ export default function getTextById(name, id) {
     }
     if (name == "zadiak") {
         return id != null ? zodiacTexts[id] : "думаю..."
+    }
+    if (name == "discriptionClaims") {
+        return id != null ? discriptionClaims[id] : "думаю..."
     }
 }

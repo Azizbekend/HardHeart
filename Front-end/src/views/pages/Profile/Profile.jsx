@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Header, Footer, useAuth, SVGIcon, Modal, ProfileModals, getTextById } from '../../Imports/components'
+import { useEffect, useState, useRef } from 'react'
+import { Header, Footer, useAuth, SVGIcon, Modal, ProfileModals, getTextById, AgeCalculate, getFetch, postFetch } from '../../Imports/components'
 import { karta, smoke, alkogol, strelka, ruler, zadiak, bodyType } from '../../Imports/media'
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +7,9 @@ export default function Profile() {
     const { user, signout, setUserInfo, setUser } = useAuth();
     const navigate = useNavigate()
 
-    const imagesCount = [{ count: 1 }, { count: 2 }, { count: 3 }, { count: 4 }, { count: 5 }]
+    const [imagesCount, setImagesCount] = useState(user['imgs'])
+    const inputRef = useRef(null);
+
     // Переключатель модалок
     const [modalOpen, setModalOpen] = useState(false)
     const [modalName, setModalName] = useState(null)
@@ -17,24 +19,49 @@ export default function Profile() {
         setModalOpen(true)
     }
 
-    function calculateAge(birthDate) {
-        // Преобразуем строку в объект даты
-        const birth = new Date(birthDate);
-        const today = new Date();
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append("iduser", user.id);
+            formData.append("file", file);
 
-        // Вычисляем возраст
-        let age = today.getFullYear() - birth.getFullYear();
+            // Отправляем данные на сервер
+            postFetch("addFoto", formData, null, true)
+                .then((data) => {
+                    setUser(prevUser => ({ ...prevUser, imgs: data }))
+                    setUserInfo(user)
+                    console.log(data)
+                })
+                .catch((err) => console.log(`Ошибка: ${err}`));
 
-        // Проверяем, был ли день рождения уже в этом году
-        const monthDiff = today.getMonth() - birth.getMonth();
-        const dayDiff = today.getDate() - birth.getDate();
-
-        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-            age--;
+            if (inputRef.current) {
+                inputRef.current.value = '';
+            }
         }
+    };
 
-        return age;
+    useEffect(() => {
+        let data = [];
+        for (let i = 1; i < 7; i++) {
+            data[i] = user["imgs"]?.[i - 1] || { count: i };
+        }
+        setImagesCount(data)
+        console.log()
+    }, [user])
+
+    function deleteFoto(idFoto) {
+        postFetch("deleteFoto", { id: idFoto })
+            .then((data) => {
+                setUser(prevUser => ({ ...prevUser, imgs: data }))
+                setUserInfo(user)
+            })
+            .catch((err) => { console.log(err) })
+        if (inputRef.current) {
+            inputRef.current.value = '';
+        }
     }
+
 
     return (
         <>
@@ -50,29 +77,33 @@ export default function Profile() {
 
                 <div className="profile container">
                     <div className="profile__imgs">
-                        <div className='profile__img'>
-                            {/* <img src="" alt="" /> */}
-                            <img src="../../../media/users/bannerCenter.png" alt="" />
-                        </div>
-                        {imagesCount.map((i, index) => (
-                            <label
-                                key={`img-label-${i.count}`}
-                                className="profile__img"
-                                htmlFor={`img-${i.count}`}
-                            >
-                                <button className="profile__img-remove">
-                                    <SVGIcon name="closeWhite" />
-                                </button>
-                                <p>{i.count}</p>
-                                <input type="file" id={`img-${i.count}`} style={{ display: 'none' }} />
-                            </label>
-                        ))}
+
+                        {imagesCount &&
+                            imagesCount.map((foto, index) => (
+                                (foto.name)
+                                    ?
+                                    <div className='profile__img' key={index}>
+                                        <button className="profile__img-remove" onClick={() => deleteFoto(foto.id)}>
+                                            <SVGIcon name="closeWhite" />
+                                        </button>
+                                        <img src={`http://127.0.0.1:8000/api/images/${foto.name}`} alt="asd" />
+                                    </div>
+                                    :
+                                    <label key={index}
+                                        className="profile__img"
+                                        htmlFor={`img-${foto.count}`}
+                                    >
+                                        <p>{foto.count}</p>
+                                        <input type="file" onChange={(event) => handleImageChange(event)} id={`img-${foto.count}`} style={{ display: 'none' }} ref={inputRef} />
+                                    </label>
+                            ))}
+                            
                     </div>
 
                     <div className="profile__info pi">
                         <div className="pi__infoBlock">
                             <div className='pi__edit'>
-                                <p className="pi__name">{user.name}, {calculateAge(user.age)}</p>
+                                <p className="pi__name">{user.name}, {AgeCalculate(user.age)}</p>
                                 <button className='pi__edit' onClick={() => openModalName('name')}><SVGIcon name="edit" /></button>
                             </div>
 
@@ -109,11 +140,11 @@ export default function Profile() {
                                 </span>
                                 <span className="pi__infoBlock-card">
                                     <img src={ruler} alt="" />
-                                    {user.height != null ? user.height : "думаю..."}
+                                    {user.height != null ? user.height + ' см' : "думаю..."}
                                 </span>
                                 <span className="pi__infoBlock-card">
                                     <img src={strelka} alt="" />
-                                    {user.weight != null ? user.weight : "думаю..."}
+                                    {user.weight != null ? user.weight + ' кг' : "думаю..."}
                                 </span>
                                 <span className="pi__infoBlock-card">
                                     <img src={bodyType} alt="" />
@@ -155,7 +186,7 @@ export default function Profile() {
                             </div>
                         </div>
                     </div>
-                    <button onClick={() => signout(() => navigate("/"), { replace: true })} className='profile__exit _btn _nFonRed _borderBtn'>Вытйи</button>
+                    <button onClick={() => signout(() => navigate("/"), { replace: true })} className='profile__exit _btn _nFonRed _borderBtn'>Выйти</button>
                 </div>
 
                 <Footer />

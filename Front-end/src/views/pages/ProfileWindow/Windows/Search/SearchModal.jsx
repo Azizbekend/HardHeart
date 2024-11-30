@@ -1,12 +1,31 @@
-import { useState } from "react"
+import { SVGIcon, postFetch } from '../../../../Imports/components'
+import { useEffect, useState } from "react"
 import { map, target, gender, karta, smoke, alkogol, strelka, ruler, zadiak, seriousDate, freeDate, conversation, newExperience, bodyType } from '../../../../Imports/media'
-import SVGIcon from "../../../../components/SVGIcon";
 import { nameTexts, smokingTexts, bodyTypeTexts, zodiacTexts, genderTexts, finansTexts } from '../../../../Imports/data'
+export default function ProfileWindowModal({ modal, body = null, closeModal }) {
 
-export default function ProfileWindowModal({ modal }) {
 
     const [nameModal, setNameModal] = useState(modal);
+    // Обновляем nameModal каждый раз, когда modal меняется
+    useEffect(() => {
+        setNameModal(modal);
+    }, [modal]);
     const [city, setCity] = useState();
+
+    const [checkClaim, setCheckClaim] = useState();
+    function postClaim(e) {
+        e.preventDefault()
+
+        const data = {
+            whom: body.whom,
+            who: body.who,
+            discription: checkClaim,
+        }
+        postFetch("claim", data).then(() => {
+            closeModal()
+        })
+
+    }
 
     // ПОЛЗУНКИ
     function useRangeSlider(initialValue, minValue, maxValue) {
@@ -45,8 +64,7 @@ export default function ProfileWindowModal({ modal }) {
                             {filterItem(zadiak, "Знак зодиака", null, "zadiak")}
                             <button type="submit" className="_btn _green _borderBtn">Сохранить</button>
                         </div>
-                    </>
-                )
+                    </>)
             case 'city':
                 return (<>
                     <h3 className="modal__name _black">Город</h3>
@@ -145,6 +163,41 @@ export default function ProfileWindowModal({ modal }) {
                 return (<>
                     {modalLayout("Знак зодиака", zodiacTexts, "finans")}
                 </>)
+            case "claim":
+                return (
+                    <>
+                        <h3 className="modal__name _black">Пожаловаться</h3>
+                        <form className="modal__items _profile" onSubmit={(e) => postClaim(e)}>
+
+                            <label htmlFor="claim-1" className="modal__radioInp">
+                                <input type="radio" id="claim-1" name="claim" onClick={() => setCheckClaim(0)} />
+                                <div className="modal__inp _radio _borderBtn">
+                                    <span>Чужие изображения</span>
+                                </div>
+                            </label>
+                            <label htmlFor="claim-2" className="modal__radioInp">
+                                <input type="radio" id="claim-2" name="claim" onClick={() => setCheckClaim(1)} />
+                                <div className="modal__inp _radio _borderBtn">
+                                    <span>Непристойный контент</span>
+                                </div>
+                            </label>
+                            <label htmlFor="claim-3" className="modal__radioInp">
+                                <input type="radio" id="claim-3" name="claim" onClick={() => setCheckClaim(2)} />
+                                <div className="modal__inp _radio _borderBtn">
+                                    <span>Непристойные фото</span>
+                                </div>
+                            </label>
+                            <label htmlFor="claim-4" className="modal__radioInp">
+                                <input type="radio" id="claim-4" name="claim" onClick={() => setCheckClaim(3)} />
+                                <div className="modal__inp _radio _borderBtn">
+                                    <span>другое</span>
+                                </div>
+                            </label>
+
+                            <button type="submit" className="_btn  _borderBtn _nFon">Отправить</button>
+                        </form>
+                    </>
+                )
 
         }
     }
@@ -163,7 +216,6 @@ export default function ProfileWindowModal({ modal }) {
         </>)
     }
 
-
     function itemInputRadioPurpose(name, id, text, img) {
         return (<>
             <label htmlFor={`${name}-${id}`} className="modal__radioInp">
@@ -176,7 +228,6 @@ export default function ProfileWindowModal({ modal }) {
         </>)
     }
 
-    // Фунция создания контента модальных окон about
     function modalLayout(title, textsData, name) {
         return (
             <>
@@ -189,7 +240,7 @@ export default function ProfileWindowModal({ modal }) {
             </>
         )
     }
-    // Функция создания radio элементов
+
     function itemInputRadio(name = null, id = null, text = null) {
         return (
             <label htmlFor={`${name}-${id}`} className="modal__radioInp">

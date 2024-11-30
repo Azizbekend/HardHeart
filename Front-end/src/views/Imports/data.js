@@ -1,5 +1,7 @@
 import accordionData from '../../data/accordionData';
 import profileModalsData from '../../data/profileModalsData';
+import { phrasesList } from '../../data/readyPhrasesData';
+import discriptionClaims from '../../data/discriptionClaims';
 
 const nameTexts = profileModalsData["nameTexts"]
 const smokingTexts = profileModalsData["smokingTexts"]
@@ -15,5 +17,7 @@ export {
     bodyTypeTexts,
     zodiacTexts,
     genderTexts,
-    finansTexts
+    finansTexts,
+    phrasesList,
+    discriptionClaims,
 }

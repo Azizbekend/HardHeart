@@ -1,134 +1,133 @@
-import { useEffect, useState, useRef } from 'react';
-import { Header, Footer, SVGIcon, Modal, useAuth } from '../../Imports/components'
-import { bannerCenterFoto, friendIcon, chatFoto } from '../../Imports/media'
+import { useEffect, useState } from 'react';
+import { Header, Footer, SVGIcon, useAuth } from '../../Imports/components';
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
 export default function ProfileWindow() {
     const { user } = useAuth();
-    const { panel } = useParams()
-    const [panelCarse, setPanelCase] = useState("");
+    const { panel } = useParams();
+    const localUrl = useLocation();
 
-    // Следит за разрешением
+    // Состояния
     const [isWideProfile, setIsWideProfile] = useState(window.innerWidth >= 1170);
-    const handleResize = () => {
-        setIsWideProfile(window.innerWidth >= 1170);
-    };
+    const [chats, setChats] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Отслеживание ресайза
     useEffect(() => {
+        const handleResize = () => setIsWideProfile(window.innerWidth >= 1170);
         window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const localUrl = useLocation()
+    // Загрузка чатов
     useEffect(() => {
-        setPanelCase(windowPanel(panel, false));
-    }, [panel, localUrl.pathname]);
-    // DeleteMe
-    function chatItem(boolka = false) {
-        return (
-            <Link to="/profile/chat/:idChat" className={`pwp__item ${boolka && "_active"}`}>
-                <img className="pwp__item-img" src={chatFoto} alt="" />
-                <div className="pwp__item-info">
-                    <p className="pwp__item-name">Имя фамилия</p>
-                    <p className="pwp__item-text">Привет, как дела?</p>
-                </div>
-            </Link>
-        )
-    }
+        const fetchChats = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`${API_BASE_URL}/getChats?idUser=${user.id}`);
+                const data = await response.json();
+                setChats(data);
+            } catch (err) {
+                console.error('Ошибка загрузки чатов:', err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    function adminPanelItem(name, iconName, link) {
-        const isActive = localUrl.pathname === link;  // Сохраним активное состояние
-        return (
-            <Link to={link} className={`pwp__item _pdng ${isActive ? "_active" : ""}`}>
-                <SVGIcon className="pwp__item-img" name={iconName} />
-                <p className="pwp__item-name _notM">{name}</p>
-            </Link>
-        );
-    }
+        fetchChats();
+    }, [user.id]);
 
+    // Компонент элемента панели
+    const PanelItem = ({ name, iconName, link, isActive }) => (
+        <Link to={link} className={`pwp__item _pdng ${isActive ? '_active' : ''}`}>
+            <SVGIcon className="pwp__item-img" name={iconName} />
+            <p className="pwp__item-name _notM">{name}</p>
+        </Link>
+    );
 
-    useEffect(() => {
-        setPanelCase(windowPanel(panel, false))
-    }, [panel])
-
-    function windowPanel(panel, boolka) {
-        switch (panel) {
-            case "userChats":
-                return (<>
-                    <div className="profileWindow__panel pwp">
-                        <div className="pwp__title">Чаты</div>
-                        <div className="pwp__items">
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                        </div>
-                    </div>
-                </>)
-            case "adminPanel":
-                return (<>
-                    <div className="profileWindow__panel pwp">
-                        <div className="pwp__title">
-                            <div className="pwp__title-foto">
-                                <SVGIcon name="user" />
+    // Панель чатов
+    const renderChatsPanel = () => (
+        <div className="profileWindow__panel pwp">
+            <div className="pwp__title">Чаты</div>
+            <div className="pwp__items">
+                {loading ? (
+                    <p>Загрузка...</p>
+                ) : (
+                    chats.map((chat, index) => (
+                        <Link
+                            to={`/profileWindow/userChats/chat/${chat.idChat}/${chat.userInfo.idUserFriend}`}
+                            className="pwp__item"
+                            key={index}
+                        >
+                            <div className="pwp__item-img">
+                                <img
+                                    src={`${API_BASE_URL}/images/${chat.userInfo.img || 'bannerCenter.png'}`}
+                                    alt=""
+                                />
                             </div>
-                            <p>Админ Админов</p>
-                        </div>
-                        <div className="pwp__items">
-                            {adminPanelItem("Список пользователей", "users", "/profileWindow/adminPanel/like")}
-                            {/* {adminPanelItem("Статистика", "statistic", "#")} */}
-                            {adminPanelItem("Жалобы", "chatsAdmin", "/profileWindow/adminPanel/complaints")}
-                        </div>
-                    </div>
-                </>)
-            case "adminChats":
-                return (<>
-                    <div className="profileWindow__panel pwp">
-                        <div className="pwp__title">Чаты</div>
-                        <div className="pwp__items">
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                            {chatItem(boolka)}
-                        </div>
-                    </div>
-                </>)
+                            <div className="pwp__item-info">
+                                <p className="pwp__item-name">{chat.userInfo.name}</p>
+                                <p className="pwp__item-text">{chat.firstMess}</p>
+                            </div>
+                        </Link>
+                    ))
+                )}
+            </div>
+        </div>
+    );
+
+    // Панель администратора
+    const renderAdminPanel = () => (
+        <div className="profileWindow__panel pwp">
+            <div className="pwp__title">
+                <div className="pwp__title-foto _admin">
+                    <SVGIcon name="user" />
+                </div>
+                <p>Админ Админов</p>
+            </div>
+            <div className="pwp__items">
+                <PanelItem
+                    name="Список пользователей"
+                    iconName="users"
+                    link="/profileWindow/adminPanel/like"
+                    isActive={localUrl.pathname === '/profileWindow/adminPanel/like'}
+                />
+                <PanelItem
+                    name="Жалобы"
+                    iconName="chatsAdmin"
+                    link="/profileWindow/adminPanel/complaints"
+                    isActive={localUrl.pathname === '/profileWindow/adminPanel/complaints'}
+                />
+            </div>
+        </div>
+    );
+
+    // Выбор панели
+    const renderPanelContent = () => {
+        switch (panel) {
+            case 'userChats':
+                return renderChatsPanel();
+            case 'adminPanel':
+                return renderAdminPanel();
             default:
-                break;
+                return null;
         }
-    }
+    };
 
     return (
         <>
             <Header />
-            <div className='wripper'>
+            <div className="wripper">
                 <div className="container">
                     <div className="profileWindow">
-
-                        {isWideProfile && (
-                            <>
-                                {panelCarse}
-                            </>
-                        )}
-
+                        {isWideProfile && renderPanelContent()}
                         <Outlet />
                     </div>
                 </div>
-            </div >
+            </div>
             <Footer />
         </>
-    )
+    );
 }

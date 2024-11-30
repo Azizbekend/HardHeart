@@ -6,32 +6,13 @@ import { SVGIcon } from '../../Imports/components';
 
 
 export default function ProfileModals({ nameModal, modalClose, user, updateUser, setUser }) {
-
-    const {
-        register,
-        formState: {
-            errors,
-            isValid
-        },
-        handleSubmit,
-        reset,
-        getValues,
-        setError
-    } = useForm({
-        mode: "onBlur",
-    });
+    const { register, formState: { errors, isValid },
+        handleSubmit, reset, getValues, setError } = useForm({ mode: "onBlur" });
 
     // aboutData
     const [aboutData, setAboutData] = useState({
-        drinks: null,
-        smoking: null,
-        financialSituation: null,
-        rangeBody: null,
-        rangeWidth: null,
-        body: null,
-        zodiac: null,
+        drinks: null, smoking: null, financialSituation: null, rangeBody: null, rangeWidth: null, body: null, zodiac: null,
     });
-
     const onSubmitProfile = async (data, name) => {
         if (name == "name") {
             try {
@@ -42,7 +23,7 @@ export default function ProfileModals({ nameModal, modalClose, user, updateUser,
                     },
                     body: JSON.stringify({
                         idUser: user.id,
-                        userName: data.userName,
+                        userName: data?.userName || user.name,
                         userCity: data.userCity,
                     }),
                 });
@@ -160,14 +141,17 @@ export default function ProfileModals({ nameModal, modalClose, user, updateUser,
                 }
 
                 const responseData = await response.json();
-                console.log(responseData)
-                user.alcohol = responseData.alcohol
-                user.smoking = responseData.smoking
-                user.height = responseData.height
-                user.weight = responseData.weight
-                user.bodyType = responseData.bodyType
-                user.financialSituation = responseData.financialSituation
-                user.zadiak = responseData.zadiak
+
+                updateUser(prevUser => ({
+                    ...prevUser,
+                    alcohol: responseData.alcohol,
+                    smoking: responseData.smoking,
+                    height: responseData.height,
+                    weight: responseData.weight,
+                    bodyType: responseData.bodyType,
+                    financialSituation: responseData.financialSituation,
+                    zadiak: responseData.zadiak,
+                }))
                 setUser(user)
             } catch (error) {
                 console.error('Ошибка регистрации:', error.message);
@@ -282,8 +266,6 @@ export default function ProfileModals({ nameModal, modalClose, user, updateUser,
             }
         }
     }
-
-
     // Номер модального окна about
     const [aboutModalNumber, setAboutModalNumber] = useState(1);
     // Все модальные окна
@@ -298,7 +280,6 @@ export default function ProfileModals({ nameModal, modalClose, user, updateUser,
                                 className="modal__inp _borderBtn"
                                 placeholder="Имя:"
                                 {...register('userName', {
-                                    required: "Поле обязательна",
                                     maxLength: {
                                         value: 30,
                                         message: "Максимум 30 символов",
@@ -307,9 +288,9 @@ export default function ProfileModals({ nameModal, modalClose, user, updateUser,
                             />
                             {errors?.userName && (<p style={{ color: "red" }}>{errors?.userName?.message}</p>)}
                             <select className="modal__inp _borderBtn" {...register("userCity")}>
-                                <option value="Казань">Казань</option>
-                                <option value="Москва">Москва</option>
-                                <option value="СПб">Санкт-Петербург</option>
+                                <option value="Казани">Казань</option>
+                                <option value="Москвы">Москва</option>
+                                <option value="Санкт-Петербурга">Санкт-Петербург</option>
                             </select>
                             <button type="submit" className="_btn _green _borderBtn" disabled={!isValid}>Сохранить</button>
                         </form>
@@ -387,7 +368,6 @@ export default function ProfileModals({ nameModal, modalClose, user, updateUser,
                 return null;
         }
     };
-
     function itemInputRadioPurpose(name, id, text, img) {
         return (<>
             <label htmlFor={`${name}-${id}`} className="modal__radioInp">
@@ -399,7 +379,6 @@ export default function ProfileModals({ nameModal, modalClose, user, updateUser,
             </label>
         </>)
     }
-
     // Модальные окна about
     const aboutModals = (modalLvl) => {
         switch (modalLvl) {
@@ -474,7 +453,6 @@ export default function ProfileModals({ nameModal, modalClose, user, updateUser,
                 </>)
         }
     }
-
     // Фунция создания контента модальных окон about
     function modalLayout(modalLvl, title, textsData, name, end) {
         let idNextModal = modalLvl === 7 ? 1 : (modalLvl + 1);
@@ -510,8 +488,6 @@ export default function ProfileModals({ nameModal, modalClose, user, updateUser,
             </label>
         );
     }
-
-
     // range slider Рость
     const [rangeValueBody, setRangeValueBody] = useState(40)
     const progressBody = ((rangeValueBody - 40) / (160 - 40)) * 100;
@@ -526,7 +502,6 @@ export default function ProfileModals({ nameModal, modalClose, user, updateUser,
         const tempSliderValue = event.target.value;
         setRangeValueWidth(tempSliderValue);
     }
-
     return (
         <>
             {profileModal(nameModal)}

@@ -12,8 +12,8 @@ class PusherController extends Controller
     public function sendMessage(Request $request)
     {
         $message = Messages::create([
-            'id_chat' => 1,
-            'id_user' => 3, 
+            'id_chat' => $request->idChat,
+            'id_user' => $request->idUser, 
             'message' => $request->message, 
             'timestamp' => now(),
         ]);

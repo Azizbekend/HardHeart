@@ -2,7 +2,6 @@ import { useState } from "react";
 import SVGIcon from "./SVGIcon";
 
 export default function AccordionItem({ title, content, isOpen, onToggle }) {
-
     return (
         <>
             <div className="faq__item" onClick={onToggle}>
@@ -19,3 +18,5 @@ export default function AccordionItem({ title, content, isOpen, onToggle }) {
         </>
     );
 }
+
+

@@ -15,12 +15,12 @@ export const AuthProvider = ({ children }) => {
 
     const signin = (newUser, cb) => {
         setUser(newUser);
-        cb();
+        cb()
     }
 
     const signout = (cb) => {
         setUser({ role: "main" });
-        localStorage.removeItem("user"); // Очищаем данные при выходе
+        localStorage.removeItem("user");
         cb();
     }
 

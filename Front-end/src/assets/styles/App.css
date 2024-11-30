@@ -288,6 +288,19 @@ h6 {
   justify-content: center;
 }
 
+.docs {
+  min-height: 50vh;
+  margin-top: 100px;
+}
+.docs__title {
+  margin-bottom: 30px;
+  font-size: 48px;
+  font-family: "Nunito";
+}
+.docs__text {
+  font-size: 24px;
+}
+
 .header {
   border-bottom: 1px solid #c8c8c8;
   padding-top: 20px;
@@ -381,6 +394,7 @@ h6 {
   position: relative;
   max-height: 600px;
   max-width: 360px;
+  min-width: 300px;
   overflow: auto;
 }
 .modal__content::-webkit-scrollbar {
@@ -399,6 +413,9 @@ h6 {
 .modal__exited {
   opacity: 0;
   visibility: hidden;
+}
+.modal__docsText span {
+  color: var(--clr-purple);
 }
 .modal__name {
   font-weight: 700;
@@ -817,7 +834,7 @@ h6 {
   height: 438px;
   border-radius: 30px;
   padding: 20px;
-  background-color: #d1d1d1;
+  background-color: rgba(224, 224, 224, 0.737254902);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -874,7 +891,7 @@ h6 {
 .faq__item {
   margin-bottom: 20px;
   width: 100%;
-  background-color: var(--clr-gray-light);
+  background-color: #f3f3f3;
   padding: 20px;
   border-radius: 0.9090909091em;
   font-family: "OpenSans";
@@ -922,6 +939,7 @@ h6 {
 .profile__imgs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 10px;
   height: calc(200px + 600 * (100vw - 320px) / 1600);
   max-height: 600px;
@@ -934,10 +952,18 @@ h6 {
   position: relative;
   border-radius: 20px;
   font-weight: 500;
+  overflow: hidden;
   cursor: pointer;
 }
 .profile__img:hover {
   background-color: #cdcbcb;
+}
+.profile__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
 }
 .profile__img p {
   font-size: 64px;
@@ -1065,6 +1091,14 @@ h6 {
   grid-template-rows: 100%;
   gap: 2%;
 }
+.search__window-end {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  font-size: 32px;
+  width: 100%;
+  justify-content: center;
+}
 .search__info {
   display: flex;
   align-items: center;
@@ -1104,9 +1138,11 @@ h6 {
   background-color: var(--clr-purple);
   width: 80px;
   height: 80px;
+}
+.pwp__title-foto._admin {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 .pwp__title-foto svg {
   width: 45px;
@@ -1161,6 +1197,11 @@ h6 {
   width: 50px;
   height: 50px;
   border-radius: 100%;
+  overflow: hidden;
+}
+.pwp__item-img img {
+  object-fit: cover;
+  width: 100%;
 }
 .pwp__item-name {
   font-weight: 700;
@@ -1216,14 +1257,22 @@ h6 {
   height: 100%;
   padding: 20px 0;
 }
-.swi__imgCard img {
+.swi__imgCard-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.swi__imgCard-slide img {
   width: 100%;
-  max-width: 440px;
+  height: 100%;
   object-fit: cover;
+  display: block;
+  border-radius: 20px;
 }
 .swi__imgCard-swiper {
   width: 100%;
   position: relative;
+  max-height: 560px;
 }
 .swi__imgCard-swiper__btns {
   position: absolute;
@@ -1297,7 +1346,7 @@ h6 {
   padding-right: 20px;
   display: grid;
   gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 .like__card {
   border-radius: 20px;
@@ -1312,11 +1361,24 @@ h6 {
   gap: 10px;
   padding-bottom: 10px;
 }
+.like__card._red {
+  background-color: rgb(255, 0, 0);
+}
+.like__card._red * {
+  color: white;
+}
 .like__card-img {
+  display: flex;
+  align-items: center;
+  justify-content: сenter;
   position: relative;
+  height: 270px;
 }
 .like__card-img img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .like__card-name {
   margin-left: 15px;
@@ -1393,7 +1455,9 @@ h6 {
 .complaints__center {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
+  flex: 1;
 }
 
 .chat {
@@ -1435,18 +1499,16 @@ h6 {
 .chat__header-foto {
   width: 40px;
   height: 40px;
+  border-radius: 100%;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: start;
 }
 .chat__header-foto img {
-  object-fit: cover;
   width: 100%;
 }
 .chat__messages {
   display: flex;
   flex-direction: column;
+  justify-content: end;
   gap: 10px;
   padding: 0 30px;
   height: 100%;
@@ -1546,10 +1608,8 @@ h6 {
 .cp__foto {
   width: 70px;
   height: 70px;
+  border-radius: 100%;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: start;
 }
 .cp__foto img {
   object-fit: cover;
@@ -1606,9 +1666,17 @@ h6 {
 .cp__timer-inps input, .cp__timer-inps button {
   width: 60px;
   font-size: 14px;
+  width: 80px;
   padding: 5px 20px;
   text-align: center;
   background-color: var(--clr-gray-light);
+}
+
+.block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
 }
 
 @media (max-width: 73.125em) {
@@ -1856,6 +1924,7 @@ h6 {
   }
   .swi__imgCard-slide {
     height: 60vh;
+    max-height: 60vh;
   }
   .swi__imgCard-slide img {
     width: 100%;

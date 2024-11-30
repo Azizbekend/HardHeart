@@ -6,6 +6,8 @@ import fireHeartIcon from '../../assets/media/icons/fireHeart.png';
 
 // ===MAIN===
 import bannerCenterFoto from '../../assets/media/imgs/bannerCenter.png';
+import bannerLeftFoto from '../../assets/media/imgs/bannerLeft.png';
+import bannerRightFoto from '../../assets/media/imgs/bannerRight.png';
 import payInstallment from '../../assets/media/icons/pay-installment.png';
 import slide_1 from '../../assets/media/imgs/slide-1.png';
 import slide_2 from '../../assets/media/imgs/slide-2.png';
@@ -57,5 +59,7 @@ export {
     strelka,
     ruler,
     zadiak,
-    bodyType
+    bodyType,
+    bannerLeftFoto,
+    bannerRightFoto
 }

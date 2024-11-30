@@ -25,6 +25,20 @@
     justify-content: center;
 }
 
+.docs {
+    min-height: 50vh;
+    margin-top: 100px;
+    &__title {
+        margin-bottom: 30px;
+        font-size: 48px;
+        font-family: "Nunito";
+    }
+
+    &__text {
+        font-size: 24px;
+    }
+}
+
 // header
 .header {
     border-bottom: 1px solid #c8c8c8;
@@ -137,6 +151,7 @@
         position: relative;
         max-height: 600px;
         max-width: 360px;
+        min-width: 300px;
         overflow: auto;
         &::-webkit-scrollbar {
             width: 0;
@@ -160,6 +175,12 @@
         visibility: hidden;
     }
     // ---
+
+    &__docsText {
+        & span {
+            color: var(--clr-purple);
+        }
+    }
 
     // Отдельные элементы модального окна
     &__name {
@@ -598,7 +619,6 @@
         z-index: -1;
 
         @include razmer("width", 138, 80);
-
         &._top {
             top: -17%;
             &._left {
@@ -654,7 +674,7 @@
         height: 438px;
         border-radius: 30px;
         padding: 20px;
-        background-color: #d1d1d1;
+        background-color: #e0e0e0bc;
 
         display: flex;
         justify-content: center;
@@ -722,7 +742,7 @@
     &__item {
         margin-bottom: 20px;
         width: 100%;
-        background-color: var(--clr-gray-light);
+        background-color: #f3f3f3;
         padding: 20px;
         border-radius: em(20, 22);
         font-family: "OpenSans";
@@ -776,6 +796,7 @@
     &__imgs {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
         gap: 10px;
         @include razmer("height", 800, 200);
         max-height: 600px;
@@ -789,10 +810,19 @@
         position: relative;
         border-radius: 20px;
         font-weight: 500;
+        overflow: hidden;
 
         cursor: pointer;
         &:hover {
             background-color: #cdcbcb;
+        }
+
+        & img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+            display: block;
         }
 
         & p {
@@ -950,6 +980,15 @@
         grid-template-columns: 43% 56%;
         grid-template-rows: 100%;
         gap: 2%;
+
+        &-end {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            font-size: 32px;
+            width: 100%;
+            justify-content: center;
+        }
     }
 
     &__info {
@@ -1000,10 +1039,11 @@
             width: 80px;
             height: 80px;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
+            &._admin {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
             & svg {
                 width: 45px;
                 height: 45px;
@@ -1068,7 +1108,14 @@
             width: 50px;
             height: 50px;
             border-radius: 100%;
+            overflow: hidden;
+
+            & img {
+                object-fit: cover;
+                width: 100%;
+            }
         }
+
         &-name {
             font-weight: 700;
             margin-bottom: 8px;
@@ -1132,16 +1179,24 @@
         height: 100%;
         padding: 20px 0;
 
-        & img {
-            width: 100%;
-            max-width: 440px;
-            object-fit: cover;
+        &-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            & img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                border-radius: 20px;
+            }
         }
 
         &-swiper {
             width: 100%;
             position: relative;
-
+            max-height: 560px;
             &__btns {
                 position: absolute;
                 top: 0;
@@ -1228,7 +1283,7 @@
         padding-right: 20px;
         display: grid;
         gap: 20px;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     }
     &__card {
         border-radius: 20px;
@@ -1244,11 +1299,27 @@
         gap: 10px;
         padding-bottom: 10px;
 
+        &._red {
+            background-color: rgb(255, 0, 0);
+
+            & * {
+                color: white;
+            }
+        }
+
         &-img {
+            display: flex;
+            align-items: center;
+            justify-content: сenter;
+
             position: relative;
+            height: 270px;
 
             & img {
                 width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
             }
         }
         &-name {
@@ -1340,7 +1411,9 @@
     &__center {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 10px;
+        flex: 1;
     }
 }
 
@@ -1386,14 +1459,11 @@
         &-foto {
             width: 40px;
             height: 40px;
+            border-radius: 100%;
             overflow: hidden;
 
-            display: flex;
-            align-items: center;
-            justify-content: start;
-
             & img {
-                object-fit: cover;
+                // object-fit: cover;
                 width: 100%;
             }
         }
@@ -1401,6 +1471,7 @@
     &__messages {
         display: flex;
         flex-direction: column;
+        justify-content: end;
         gap: 10px;
         padding: 0 30px;
 
@@ -1515,11 +1586,8 @@
     &__foto {
         width: 70px;
         height: 70px;
+        border-radius: 100%;
         overflow: hidden;
-
-        display: flex;
-        align-items: center;
-        justify-content: start;
 
         & img {
             object-fit: cover;
@@ -1583,12 +1651,21 @@
             & button {
                 width: 60px;
                 font-size: 14px;
+                width: 80px;
                 padding: 5px 20px;
                 text-align: center;
                 background-color: var(--clr-gray-light);
             }
         }
     }
+}
+
+// BLOCK
+.block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
 }
 
 @media (max-width: em($mPoint-3, 16)) {
@@ -1918,6 +1995,7 @@
 
             &-slide {
                 height: 60vh;
+                max-height: 60vh;
                 & img {
                     width: 100%;
                     max-width: none;

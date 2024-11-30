@@ -1,4 +1,3 @@
-// UseWordEffect.js
 import { useState, useEffect } from 'react';
 
 const UseWordEffect = (words) => {
@@ -10,19 +9,15 @@ const UseWordEffect = (words) => {
 
     useEffect(() => {
         switch (words[wordIndex]) {
-            case 'половинку':
-                setTypeCard('love');
+            case 'половинку': setTypeCard('love');
                 break;
-            case 'друга':
-                setTypeCard('friend');
+            case 'друга': setTypeCard('friend');
                 break;
-            case 'подругу':
-                setTypeCard('girlFriend');
+            case 'подругу': setTypeCard('girlFriend');
                 break;
             default:
                 setTypeCard('');
         }
-
         if (wordIndex < words.length) {
             if (!isRemoving) {
                 if (charIndex < words[wordIndex].length) {
@@ -59,7 +54,6 @@ const UseWordEffect = (words) => {
             }
         }
     }, [wordIndex, charIndex, isRemoving, words]);
-
     return { displayedText, typeCard, wordIndex, setWordIndex };
 };
 

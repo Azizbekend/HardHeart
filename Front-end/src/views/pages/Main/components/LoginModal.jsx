@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Navigate, replace, useNavigate } from "react-router-dom";
 import { useForm } from 'react-hook-form';
-import { useAuth } from '../../Imports/components'
+import { useAuth } from '../../../Imports/components'
 
-
-export default function LoginModal() {
-
+export default function LoginModal({ onClose }) {
     const navigate = useNavigate()
     const [isLogin, setIsLogin] = useState(true);
 
@@ -59,7 +57,6 @@ export default function LoginModal() {
             const responseData = await response.json();
             reset()
             signin(responseData.user, () => navigate("/profile"), { replace: true })
-            console.log('Успешная регистрация:', responseData.user);
         } catch (error) {
             console.error('Ошибка регистрации:', error.message);
         }
@@ -88,10 +85,18 @@ export default function LoginModal() {
                     throw new Error('Ошибка регистрации');
                 }
             }
-            
+
             const responseData = await response.json();
             reset()
-            signin(responseData, () => navigate("/profile"), { replace: true })
+
+            if (responseData.role == "user") {
+                signin(responseData, () => navigate("/profile"), { replace: true })
+            } else if (responseData.role == "admin") {
+                signin(responseData, () => navigate("/profileWindow/adminPanel/like"), { replace: true })
+            } else if (responseData.role == "block") {
+                signin(responseData, () => navigate("/block"), { replace: true })
+            }
+
             console.log('Успешная регистрация:', responseData);
         } catch (error) {
             console.error('Ошибка регистрации:', error.message);
@@ -105,10 +110,10 @@ export default function LoginModal() {
                     <h3 className="modal__name">Авторизация</h3>
                     <form className="modal__items" onSubmit={handleSubmit(onSubmitLogin)}>
                         <input className="modal__inp _borderBtn"
-                            type="emailLogin"
+                            type="email"
                             placeholder="почта:"
                             {...register('emailLogin', {
-                                required: "Поле обязательна",
+                                required: "Поле обязательно",
                                 pattern: {
                                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                                     message: 'Не корректная почта',
@@ -122,12 +127,12 @@ export default function LoginModal() {
                         {errors?.emailLogin && (<p style={{ color: "red" }}>{errors?.emailLogin?.message}</p>)}
 
                         <input
-                            type="passwordLogin"
+                            type="password"
                             className="modal__inp _borderBtn"
                             placeholder="Пароль:"
 
                             {...register('passwordLogin', {
-                                required: "Поле обязательна",
+                                required: "Поле обязательно",
                                 maxLength: {
                                     value: 20,
                                     message: "Максимум 20 символов",
@@ -152,7 +157,7 @@ export default function LoginModal() {
                             placeholder="Имя:"
 
                             {...register('name', {
-                                required: "Поле обязательна",
+                                required: "Поле обязательно",
                                 pattern: {
                                     value: /^[А-яA-z]+$/,
                                     message: "Разрешены только буквы"
@@ -167,7 +172,7 @@ export default function LoginModal() {
 
                         <input type="date" className="modal__inp _borderBtn"
                             {...register('date', {
-                                required: "Поле обязательна",
+                                required: "Поле обязательно",
                             })}
                         />
                         {errors?.date && (<p style={{ color: "red" }}>{errors?.date?.message}</p>)}
@@ -181,7 +186,7 @@ export default function LoginModal() {
                             type="email"
                             placeholder="почта:"
                             {...register('email', {
-                                required: "Поле обязательна",
+                                required: "Поле обязательно",
                                 pattern: {
                                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                                     message: 'Не корректная почта',
@@ -199,7 +204,7 @@ export default function LoginModal() {
                             placeholder="Пароль:"
 
                             {...register('password', {
-                                required: "Поле обязательна",
+                                required: "Поле обязательно",
                                 maxLength: {
                                     value: 20,
                                     message: "Максимум 20 символов",
@@ -217,14 +222,16 @@ export default function LoginModal() {
                             placeholder="Повторите пароль:"
 
                             {...register('password_r', {
-                                required: "Поле обязательна",
+                                required: "Поле обязательно",
                                 validate: (value) => value === getValues('password') || "Пароли не совпадают",
                             })}
                         />
                         {errors?.password_r && (<p style={{ color: "red" }}>{errors?.password_r?.message}</p>)}
 
-                        <button type="submit" className="_btn _purple _borderBtn" disabled={!isValid}>Войти</button>
+                        <button type="submit" className="_btn _purple _borderBtn" disabled={!isValid}>Регистрация</button>
                         <Link className="_btn _nFon _borderBtn" to="#" onClick={() => setIsLogin(true)}>Назад</Link>
+                        <p className='modal__docsText'>Продолжая, вы принимаете условия <span className='modal__linkDocs'><Link to="/documen/sogl" onClick={() => onClose()}>Соглашения</Link></span> и <span className='modal__linkDocs'><Link to="/documen/politic" onClick={() => onClose()}>Конфиденциальности</Link></span>
+                        </p>
                     </form>
                 </>
             )}

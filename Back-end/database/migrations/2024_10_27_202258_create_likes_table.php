@@ -10,7 +10,9 @@ return new class extends Migration {
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_user_whom')->constrained('users')->onDelete('cascade');
+            $table->foreignId('whom_like');
             $table->foreignId('id_user_who')->constrained('users')->onDelete('cascade');
+            $table->foreignId('who_like');
             $table->timestamps();
         });
     }

@@ -10,7 +10,6 @@ export default function Modal({ isOpen, onClose, children }) {
             onClose();
         }
     };
-
     useEffect(() => {
         window.addEventListener('keyup', handleKeyPress);
 

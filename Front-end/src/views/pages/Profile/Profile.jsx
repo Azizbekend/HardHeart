@@ -62,10 +62,8 @@ export default function Profile() {
         }
     }
 
-
     return (
         <>
-
             <div className='wripper' >
                 <Header />
                 <Modal

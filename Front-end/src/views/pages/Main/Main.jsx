@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 // ===Импорт фотографий===
 import { redHeartIcon, friendIcon, girlFriendIcon, fireHeartIcon, bannerCenterFoto, bannerLeftFoto, bannerRightFoto, payInstallment, slide_1, slide_2, slide_3 } from '../../Imports/media'
+
 // ===Импорт компонентов===
 import { UseWordEffect, Header, Footer, AccordionItem, SVGIcon, Modal, LoginModal } from '../../Imports/components'
 
@@ -28,7 +29,7 @@ export default function Main() {
             default:
                 return '';
         }
-    };
+    }
     // Анимация ховер для кнопки знакомиться в банннер
     const [isHovered, setIsHovered] = useState(false);
 
@@ -137,8 +138,6 @@ export default function Main() {
                             onToggle={() => toggle(index)}
                         />
                     ))}
-
-
                 </div>
             </div>
             <Footer />
